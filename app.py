@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_file # Añadimos send_file aquí
 import sqlite3
+import pandas as pd # <--- ESTA ES LA LÍNEA QUE FALTA ARRIBA DEL TODO
 
 app = Flask(__name__)
 
@@ -51,5 +52,22 @@ def editar(id):
     producto = db.execute('SELECT * FROM productos WHERE id = ?', (id,)).fetchone()
     db.close()
     return render_template('editar.html', producto=producto)
+    import pandas as pd
+from flask import send_file
+
+@app.route('/exportar')
+def exportar():
+    db = conectar_db()
+    # Leemos la tabla productos y la pasamos a un DataFrame
+    df = pd.read_sql_query("SELECT nombre, cantidad, stock_minimo, fecha FROM productos", db)
+    db.close()
+
+    # Guardamos temporalmente en un archivo Excel
+    nombre_archivo = "inventario_pyme.xlsx"
+    df.to_excel(nombre_archivo, index=False)
+
+    # Enviamos el archivo al usuario
+    return send_file(nombre_archivo, as_attachment=True)
+
 if __name__ == '__main__':
     app.run(debug=True)
