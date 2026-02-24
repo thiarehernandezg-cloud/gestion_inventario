@@ -2,116 +2,206 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Inventario Pyme</title>
+    <title>StockPro - Sistema de Inventario</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body class="bg-light"> 
-    <div class="container py-4"> 
+<body> 
+    <nav class="sidebar">
+        <div class="sidebar-header mb-5 text-center">
+            <h1 class="text-primary fw-bold" style="font-size: 1.8rem;">StockPro</h1>
+        </div>
         
-        <header class="navbar-custom d-flex justify-content-between align-items-center p-4 mb-4 bg-white shadow-sm rounded-4">
-            <h2 class="m-0 text-dark fw-bold">
-                <i class="fas fa-boxes text-primary"></i> StockPro
-            </h2>
-            <a href="/exportar" class="btn btn-outline-dark rounded-pill px-4">
-                <i class="fas fa-file-excel text-success"></i> Exportar Reporte
-            <div class="d-flex align-items-center gap-3">
-    <span class="text-muted small">Hola, <b>{{ current_user.username }}</b></span>
-    <a href="/logout" class="btn btn-sm btn-outline-danger rounded-pill">
-        <i class="fas fa-sign-out-alt"></i> Salir
-    </a>
-</div>
-</a>
+        <div class="sidebar-menu">
+            <button class="sidebar-btn active" onclick="mostrarSeccion('inicio', this)">
+                <i class="fas fa-home me-2"></i> Inicio
+            </button>
+            <button class="sidebar-btn" onclick="mostrarSeccion('registrar', this)">
+                <i class="fas fa-plus-circle me-2"></i> Registrar Productos
+            </button>
+            <button class="sidebar-btn" onclick="mostrarSeccion('inventario', this)">
+                <i class="fas fa-boxes me-2"></i> Inventario Actual
+            </button>
+            
+            <button class="sidebar-btn" onclick="mostrarSeccion('kpi-bajo', this)">
+                <i class="fas fa-exclamation-triangle me-2 text-warning"></i> Bajo Stock
+            </button>
+            <button class="sidebar-btn" onclick="mostrarSeccion('kpi-agotado', this)">
+                <i class="fas fa-times-circle me-2 text-danger"></i> Productos Agotados
+            </button>
+            
+            <hr class="my-4">
+            <a href="{{ url_for('exportar_reporte') }}" class="sidebar-btn text-decoration-none d-block">
+                <i class="fas fa-file-excel me-2 text-success"></i> Exportar Reporte
+            </a>
+            
+            <a href="/logout" class="sidebar-btn text-decoration-none text-danger mt-auto">
+                <i class="fas fa-sign-out-alt me-2"></i> Salir
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark">Panel de Control</h2>
+            <h4 class="text-danger fw-bold m-0">Hola, {{ current_user.username|upper }} !</h4>
         </header>
 
-        <main class="contenido-principal">
-            
-            <section class="seccion-resumen row mb-4">
-                <div class="col-md-6">
-                    <div class="cuadro-kpi info-total text-center p-3">
-                        <h6 class="text-muted">Total Unidades en Stock</h6>
-                        <h2 class="valor-kpi fw-bold">{{ total_items }}</h2>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="cuadro-kpi info-alerta text-center p-3">
-                        <h6 class="text-muted">Productos con Bajo Stock</h6>
-                        <h2 class="valor-kpi text-danger fw-bold">{{ bajo_stock }}</h2>
-                    </div>
-                </div>
-            </section>
+        <div id="sec-inicio" class="seccion-contenido">
+            <div class="row g-3 mb-4">
+                <div class="col-md-3"><div class="card kpi-card bg-primary text-white text-center p-3 border-0"><div class="small fw-bold opacity-75">TOTAL PRODUCTOS</div><div class="display-6 fw-bold">{{ total_skus }}</div></div></div>
+                <div class="col-md-3"><div class="card kpi-card bg-dark text-white text-center p-3 border-0"><div class="small fw-bold opacity-75">UNIDADES EN STOCK</div><div class="display-6 fw-bold">{{ total_unidades }}</div></div></div>
+                <div class="col-md-3"><div class="card kpi-card bg-warning text-dark text-center p-3 border-0"><div class="small fw-bold opacity-75">BAJO STOCK</div><div class="display-6 fw-bold">{{ bajo_stock }}</div></div></div>
+                <div class="col-md-3"><div class="card kpi-card bg-danger text-white text-center p-3 border-0"><div class="small fw-bold opacity-75">AGOTADOS</div><div class="display-6 fw-bold">{{ agotados }}</div></div></div>
+            </div>
 
-            <section class="seccion-registro-producto p-4 mb-4 border rounded shadow-sm bg-white">
-                <h5 class="mb-3 text-secondary">Registrar Nuevo Producto</h5>
-                <form action="/agregar" method="POST" class="row g-3">
-                    <div class="col-md-4">
-                        <input type="text" name="nombre" class="form-control" placeholder="Nombre del Producto" required>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="number" name="cantidad" class="form-control" placeholder="Cantidad Inicial" required>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="number" name="stock_minimo" class="form-control" placeholder="Límite Mínimo" required>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="fas fa-plus"></i> Añadir
-                        </button>
-                    </div>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-dark text-white p-3 rounded-top-4">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> Últimos Movimientos</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Usuario</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for mov in movimientos %}
+                            <tr>
+                                <td class="ps-3 small text-muted">{{ mov.fecha }}</td>
+                                <td class="fw-bold">{{ mov.producto_nombre }}</td>
+                                <td><span class="badge rounded-pill {{ 'bg-success' if mov.tipo == 'entrada' else 'bg-danger' }}">{{ mov.tipo|upper }}</span></td>
+                                <td>{{ mov.cantidad }}</td>
+                                <td class="small">{{ mov.username }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="sec-registrar" class="seccion-contenido d-none">
+            <div class="card border-0 shadow-sm p-5 rounded-5 bg-white mb-4">
+                <h2 class="text-primary fw-bold mb-5">Registrar nuevos Productos</h2>
+                <form id="form-registro" class="row g-4">
+                    <div class="col-md-4"><input type="text" name="nombre" id="reg-nombre" class="form-control form-control-lg rounded-pill border-primary" placeholder="Nombre del Producto" required></div>
+                    <div class="col-md-3"><input type="number" name="cantidad" id="reg-cantidad" class="form-control form-control-lg rounded-pill border-primary" placeholder="Cantidad Entrante" required></div>
+                    <div class="col-md-3"><input type="number" name="stock_minimo" id="reg-limite" class="form-control form-control-lg rounded-pill border-primary" placeholder="Límite Mínimo" required></div>
+                    <div class="col-md-2"><button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold">+ Añadir</button></div>
                 </form>
-            </section>
+            </div>
+            <div class="card border-0 shadow-sm p-5 rounded-5 bg-white">
+                <h2 class="text-primary fw-bold mb-4">Nuevos Productos:</h2>
+                <div id="lista-recientes"></div>
+            </div>
+        </div>
 
-            <section class="seccion-inventario bg-white p-3 rounded shadow-sm">
-                <div class="buscador-contenedor mb-3">
-                    <input type="text" id="buscador" class="form-control" placeholder="🔍 Buscar producto por nombre...">
+        <div id="sec-inventario" class="seccion-contenido d-none">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 id="titulo-inventario" class="text-primary fw-bold mb-0">Inventario Actual</h2>
+                    <div class="search-box">
+                        <input type="text" id="buscador" class="form-control rounded-pill border-primary ps-4" placeholder="🔍 Buscar producto...">
+                    </div>
                 </div>
 
-                <table class="table table-hover align-middle">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Stock Actual</th>
-                            <th>Estado</th>
-                            <th>Fecha Registro</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in productos %}
-                        <tr>
-                            <td class="fw-bold">{{ p.nombre }}</td>
-                            <td>{{ p.cantidad }}</td>
-                            <td>
-                                {% if p.cantidad <= p.stock_minimo %}
-                                    <span class="badge bg-danger">Bajo Stock</span>
-                                {% else %}
-                                    <span class="badge bg-primary">Disponible</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-muted small">{{ p.fecha }}</td>
-                            <td>
-                                <a href="/editar/{{ p.id }}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="/eliminar/{{ p.id }}" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-        </main>
-    </div> <script>
-        document.getElementById('buscador').addEventListener('keyup', function() {
-            let filtro = this.value.toLowerCase();
-            let filas = document.querySelectorAll('tbody tr');
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="tabla-productos">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Fecha Ingreso</th>
+                                <th>Nombre</th>
+                                <th>Stock Actual</th>
+                                <th>Mínimo</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in productos %}
+                            <tr data-status="{% if p.cantidad == 0 %}agotado{% elif p.cantidad <= p.stock_minimo %}bajo{% else %}disponible{% endif %}">
+                                <td class="small text-muted">{{ p.fecha_creacion }}</td>    
+                                <td class="fw-bold">{{ p.nombre }}</td>
+                                <td>{{ p.cantidad }}</td>
+                                <td>{{ p.stock_minimo }}</td>
+                                <td>
+                                    {% if p.cantidad == 0 %}
+                                        <span class="badge bg-danger">Agotado</span>
+                                    {% elif p.cantidad <= p.stock_minimo %}
+                                        <span class="badge bg-warning text-dark">Bajo Stock</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Disponible</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <a href="/editar/{{ p.id }}" class="btn btn-warning btn-sm rounded-3"><i class="fas fa-edit"></i></a>
+                                    <a href="/eliminar/{{ p.id }}" class="btn btn-danger btn-sm rounded-3 ms-1"><i class="fas fa-trash"></i></a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // ... (Tu código de mostrarSeccion, filtrarTabla y buscador se mantiene igual)
+        function mostrarSeccion(id, btn) {
+            document.querySelectorAll('.seccion-contenido').forEach(s => s.classList.add('d-none'));
+            document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+            if (id === 'kpi-bajo') {
+                document.getElementById('sec-inventario').classList.remove('d-none');
+                document.getElementById('titulo-inventario').innerText = "Productos con Bajo Stock";
+                filtrarTabla('bajo');
+            } else if (id === 'kpi-agotado') {
+                document.getElementById('sec-inventario').classList.remove('d-none');
+                document.getElementById('titulo-inventario').innerText = "Productos Agotados";
+                filtrarTabla('agotado');
+            } else if (id === 'inventario') {
+                document.getElementById('sec-inventario').classList.remove('d-none');
+                document.getElementById('titulo-inventario').innerText = "Inventario Actual";
+                filtrarTabla('todos');
+            } else {
+                document.getElementById('sec-' + id).classList.remove('d-none');
+            }
+            btn.classList.add('active');
+        }
+
+        function filtrarTabla(filtro) {
+            let filas = document.querySelectorAll('#tabla-productos tbody tr');
             filas.forEach(fila => {
-                let nombreProducto = fila.querySelector('td').textContent.toLowerCase();
-                fila.style.display = nombreProducto.includes(filtro) ? '' : 'none';
+                let status = fila.getAttribute('data-status');
+                fila.style.display = (filtro === 'todos' || status === filtro) ? '' : 'none';
+            });
+        }
+
+        document.getElementById('buscador').addEventListener('keyup', function() {
+            let valor = this.value.toLowerCase();
+            document.querySelectorAll('#tabla-productos tbody tr').forEach(fila => {
+                let nombre = fila.cells[1].textContent.toLowerCase(); // Busca en la columna Nombre
+                fila.style.display = nombre.includes(valor) ? '' : 'none';
+            });
+        });
+
+        document.getElementById('form-registro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/agregar', { method: 'POST', body: formData })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const lista = document.getElementById('lista-recientes');
+                    const nuevoItem = document.createElement('div');
+                    nuevoItem.className = 'alert alert-info d-flex justify-content-between align-items-center rounded-pill mb-2';
+                    nuevoItem.innerHTML = `<span><strong>${data.nombre}</strong> - Cantidad: ${data.cantidad}</span><span class="badge bg-primary">Recién añadido</span>`;
+                    lista.prepend(nuevoItem);
+                    this.reset();
+                    document.getElementById('reg-nombre').focus();
+                }
             });
         });
     </script>

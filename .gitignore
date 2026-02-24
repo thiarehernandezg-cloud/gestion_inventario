@@ -12,3 +12,4 @@ instance/
 
 # Archivos temporales de Excel
 *.xlsx
+database.db

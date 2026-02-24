@@ -1,97 +1,66 @@
 :root {
-    --sidebar-width: 250px;
-    --bg-light: #f4f7fe;
-    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --sidebar-width: 260px;
+    --blue-primary: #3182ce;
+    --bg-main: #f1f5f9;
 }
 
 body {
-    background-color: var(--bg-light);
-    display: flex;
-    min-height: 100vh;
+    background-color: #ffffff;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Contenedor Principal */
-.main-content {
-    flex: 1;
-    padding: 2rem;
-    margin-left: var(--sidebar-width);
-}
-
-/* Sidebar Estilizada */
+/* Sidebar fija a la izquierda */
 .sidebar {
     width: var(--sidebar-width);
-    background: white;
     position: fixed;
     height: 100vh;
-    padding: 2rem 1rem;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.03);
-}
-
-/* Tarjetas de KPI (Resumen) */
-.kpi-card {
+    left: 0;
+    top: 0;
+    padding: 30px 15px;
     background: white;
-    padding: 1.5rem;
-    border-radius: 20px;
-    border: none;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.3s;
+    z-index: 100;
+    border-right: 1px solid #e2e8f0;
 }
 
-.kpi-card:hover {
-    transform: translateY(-5px);
-}
-/* Estilos para los Cuadros de Resumen */
-.cuadro-kpi {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-}
-
-.info-alerta {
-    border-left: 5px solid #dc3545; /* Rojo para alertas */
-}
-
-.info-total {
-    border-left: 5px solid #0d6efd; /* Azul para info general */
-}
-
-.valor-kpi {
-    margin: 0;
-    font-size: 2rem;
-}
-/* Contenedor general de las tarjetas de datos */
-.seccion-resumen {
-    margin-top: 20px;
-}
-
-/* Estilo individual para cada cuadro de información */
-.cuadro-kpi {
-    background-color: #ffffff;
+.sidebar-btn {
+    width: 100%;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    padding: 12px 20px;
     border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra suave y moderna */
-    transition: transform 0.2s ease;
-    border: none;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    text-align: left;
+    display: block;
+    color: #4a5568;
+    text-decoration: none;
 }
 
-/* Efecto al pasar el mouse sobre los cuadros */
-.cuadro-kpi:hover {
-    transform: translateY(-5px);
+/* Efecto de "pestaña" que entra al cuadro azul */
+.sidebar-btn.active {
+    background: var(--bg-main);
+    border: 2px solid var(--blue-primary);
+    border-right: none; 
+    color: var(--blue-primary);
+    font-weight: bold;
+    transform: translateX(17px); /* Esto hace que se meta en el contenedor */
+    border-radius: 12px 0 0 12px;
+    position: relative;
+    z-index: 110;
 }
 
-/* Colores específicos para diferenciar los datos */
-.info-total {
-    border-top: 5px solid #007bff; /* Azul para el total */
-}
-
-.info-alerta {
-    border-top: 5px solid #dc3545; /* Rojo para alertas */
-}
-
-/* Estilo para el número grande dentro del cuadro */
-.valor-kpi {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-top: 10px;
+/* Contenedor Principal (El cuadro con borde azul) */
+.main-content {
+    margin-left: calc(var(--sidebar-width) - 5px);
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    background: var(--bg-main);
+    border: 2px solid var(--blue-primary);
+    border-radius: 30px;
+    padding: 40px;
+    min-height: calc(100vh - 40px);
+    position: relative;
+    z-index: 50;
 }
