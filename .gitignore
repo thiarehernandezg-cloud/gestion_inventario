@@ -1,0 +1,14 @@
+# Entorno virtual
+.venv/
+venv/
+__pycache__/
+
+# Base de datos (Contiene info sensible de usuarios)
+*.db
+instance/
+
+# Archivos de configuración sensible
+.env
+
+# Archivos temporales de Excel
+*.xlsx

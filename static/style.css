@@ -1,58 +1,97 @@
-/* Paleta de colores profesional */
 :root {
-    --primary-color: #2c3e50;
-    --secondary-color: #34495e;
-    --accent-color: #3498db;
-    --success-color: #27ae60;
-    --danger-color: #e74c3c;
-    --light-bg: #f8f9fa;
+    --sidebar-width: 250px;
+    --bg-light: #f4f7fe;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 body {
-    background-color: var(--light-bg);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--primary-color);
+    background-color: var(--bg-light);
+    display: flex;
+    min-height: 100vh;
 }
 
-.navbar-custom {
-    background-color: var(--primary-color);
-    padding: 1rem;
-    color: white;
-    border-radius: 0 0 15px 15px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* Contenedor Principal */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    margin-left: var(--sidebar-width);
 }
 
-.card {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.table {
+/* Sidebar Estilizada */
+.sidebar {
+    width: var(--sidebar-width);
     background: white;
-    border-radius: 10px;
-    overflow: hidden;
+    position: fixed;
+    height: 100vh;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.03);
 }
 
-.table thead {
-    background-color: var(--secondary-color);
-    color: white;
+/* Tarjetas de KPI (Resumen) */
+.kpi-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: none;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s;
 }
 
-.badge-reponer {
-    background-color: var(--danger-color);
-    padding: 0.5em 0.8em;
+.kpi-card:hover {
+    transform: translateY(-5px);
+}
+/* Estilos para los Cuadros de Resumen */
+.cuadro-kpi {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
 }
 
-.btn-exportar {
-    background-color: var(--primary-color);
-    color: white;
-    transition: all 0.3s ease;
+.info-alerta {
+    border-left: 5px solid #dc3545; /* Rojo para alertas */
 }
 
-.btn-exportar:hover {
-    background-color: var(--accent-color);
-    color: white;
-    transform: translateY(-2px);
+.info-total {
+    border-left: 5px solid #0d6efd; /* Azul para info general */
+}
+
+.valor-kpi {
+    margin: 0;
+    font-size: 2rem;
+}
+/* Contenedor general de las tarjetas de datos */
+.seccion-resumen {
+    margin-top: 20px;
+}
+
+/* Estilo individual para cada cuadro de información */
+.cuadro-kpi {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Sombra suave y moderna */
+    transition: transform 0.2s ease;
+    border: none;
+}
+
+/* Efecto al pasar el mouse sobre los cuadros */
+.cuadro-kpi:hover {
+    transform: translateY(-5px);
+}
+
+/* Colores específicos para diferenciar los datos */
+.info-total {
+    border-top: 5px solid #007bff; /* Azul para el total */
+}
+
+.info-alerta {
+    border-top: 5px solid #dc3545; /* Rojo para alertas */
+}
+
+/* Estilo para el número grande dentro del cuadro */
+.valor-kpi {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-top: 10px;
 }
